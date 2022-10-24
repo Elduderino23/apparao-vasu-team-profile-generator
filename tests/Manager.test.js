@@ -1,3 +1,4 @@
+// // test Manager.js to make sure it functions well.
 const Manager = require("../Manager")
 describe("Manager", () => {
     it("should create object with arguments of name, id, email, office_number",  () => {

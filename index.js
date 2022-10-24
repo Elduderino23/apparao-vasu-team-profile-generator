@@ -1,9 +1,13 @@
+// pulls from npm inquirer
 const inquirer = require('inquirer')
+// creates files system
 const fs = require("fs")
+// pulls from respective role.js in order to populate the answered questions with the right information.
 const Manager = require("./Manager.js")
 const Engineer = require("./Engineer.js")
 const Intern = require("./Intern.js")
 const Employee = require("./Employee.js")
+// Array for questions
 const employeeArray = []
 
 const managerQuestion = [{
@@ -90,28 +94,7 @@ const internQuestion = [{
 
 }]
 
-// const employeeQuestion = [{
-//     name: "name",
-//     message: "What is the team employee's name?",
-//     type: "input",
-
-// }, {
-//     name: "id",
-//     message: "What is the team employee's id?",
-//     type: "input",
-
-// }, {
-//     name: "email",
-//     message: "What is the team employee's email?",
-//     type: "input",
-// }, {
-//     name: "roleChoice",
-//     message: "Which type of team member wold you like to add?",
-//     type: "list",
-//     choices: ['Employee', 'Engineer', 'Intern', 'Manager', 'Finish building my team']
-
-// }]
-
+// Generates HTML and places input information in the right spot
 function generateHTML() {
     var htmlBeginner = `
     <!DOCTYPE html>
@@ -230,7 +213,7 @@ function generateHTML() {
     `
     return htmlBeginner
 }
-
+// Controls switching from one role to another.
 function userChoice(nextRole) {
     switch (nextRole) {
         case ("Employee"):
@@ -253,7 +236,7 @@ function userChoice(nextRole) {
             break;
     }
 }
-
+// Helps populate user input for manager
 function manager() {
     inquirer.prompt(managerQuestion).then(function (data) {
         var newManager = new Manager(data.name, data.id, data.email, data.office_number)
@@ -261,7 +244,7 @@ function manager() {
         userChoice(data.roleChoice)
     })
 }
-
+// Helps populate user input for engineer
 function engineer() {
     inquirer.prompt(engineerQuestion).then(function (data) {
         var newEngineer = new Engineer(data.name, data.id, data.email, data.github)
@@ -269,7 +252,7 @@ function engineer() {
         userChoice(data.roleChoice)
     })
 }
-
+// Helps populate user input for intern
 function intern() {
     inquirer.prompt(internQuestion).then(function (data) {
         var newIntern = new Intern(data.name, data.id, data.email, data.school)
@@ -277,7 +260,7 @@ function intern() {
         userChoice(data.roleChoice)
     })
 }
-
+// Helps populate user input for employee information and puts it into the other rolls
 function employee() {
     inquirer.prompt(employeeQuestion).then(function (data) {
         var newEmployee = new Employee(data.name, data.id, data.email)
@@ -288,6 +271,3 @@ function employee() {
 
 
 manager();
-// module.exports = generateHTML, userChoice, manager, engineer, intern, employee;
-// var makeHTML = generateHTML(data)
-// writeToFile("Sample.html", makeHTML);

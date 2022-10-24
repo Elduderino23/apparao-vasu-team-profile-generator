@@ -1,3 +1,4 @@
+// Structure that used by index.js to create the name, id, and email
 class Employee{
     constructor(name, id, email){
     this.name = name,
@@ -19,21 +20,3 @@ class Employee{
 }
   
   module.exports = Employee;
-
-//   function Employee(name, id, email) {
-//     if (typeof name !== "string" || !name.trim().length) {
-//       throw new Error("Expected parameter 'name' to be a non-empty string");
-//     }
-  
-//     if (typeof id !== "number" || isNaN(id) || id < 0) {
-//       throw new Error("Expected parameter 'age' to be a non-negative number");
-//     }
-
-//     if (typeof email !== "string" || isNaN(email) || email.trim().length) {
-//         throw new Error("Expected parameter 'email' to be a non-empty string");
-//       }
-  
-//     this.name = name;
-//     this.id = id;
-//     this.email = email;
-//   }

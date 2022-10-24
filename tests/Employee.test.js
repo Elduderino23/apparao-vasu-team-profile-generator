@@ -1,3 +1,4 @@
+// test Employee.js to make sure it functions well.
 const Employee = require("../Employee")
 describe("Employee", () => {
     it("should create object with arguments of name, id, email",  () => {

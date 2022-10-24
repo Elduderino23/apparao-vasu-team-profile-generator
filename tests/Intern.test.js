@@ -1,3 +1,4 @@
+// test Intern.js to make sure it functions well.
 const Intern = require("../Intern")
 describe("Intern", () => {
     it("should create object with arguments of name, id, email, office_number",  () => {
