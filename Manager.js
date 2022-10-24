@@ -1,18 +1,8 @@
-class Manager{
+const Employee =require("./Employee")
+class Manager extends Employee{
     constructor(name, id, email, office_number){
-    this.name = name,
-    this.id = id,
-    this.email = email
+        super(name, id, email)
     this.office_number = office_number
-    }
-    getName = () => {
-        return this.name;
-    }
-    getID = () => {
-        return this.id;
-    }
-    getEmail = () => {
-        return this.email;
     }
     getOfficeNumber = () => {
         return this.office_number;

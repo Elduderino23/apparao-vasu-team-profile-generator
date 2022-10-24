@@ -30,7 +30,7 @@ const managerQuestion = [{
     name: "roleChoice",
     message: "Which type of team member wold you like to add?",
     type: "list",
-    choices: ['Employee', 'Engineer', 'Intern', 'Manager', 'Finish building my team']
+    choices: ['Engineer', 'Intern', 'Manager', 'Finish building my team']
 
 }]
 
@@ -58,7 +58,7 @@ const engineerQuestion = [{
     name: "roleChoice",
     message: "Which type of team member wold you like to add?",
     type: "list",
-    choices: ['Employee', 'Engineer', 'Intern', 'Manager', 'Finish building my team']
+    choices: ['Engineer', 'Intern', 'Manager', 'Finish building my team']
 
 }]
 
@@ -86,31 +86,31 @@ const internQuestion = [{
     name: "roleChoice",
     message: "Which type of team member wold you like to add?",
     type: "list",
-    choices: ['Employee', 'Engineer', 'Intern', 'Manager', 'Finish building my team']
+    choices: ['Engineer', 'Intern', 'Manager', 'Finish building my team']
 
 }]
 
-const employeeQuestion = [{
-    name: "name",
-    message: "What is the team employee's name?",
-    type: "input",
+// const employeeQuestion = [{
+//     name: "name",
+//     message: "What is the team employee's name?",
+//     type: "input",
 
-}, {
-    name: "id",
-    message: "What is the team employee's id?",
-    type: "input",
+// }, {
+//     name: "id",
+//     message: "What is the team employee's id?",
+//     type: "input",
 
-}, {
-    name: "email",
-    message: "What is the team employee's email?",
-    type: "input",
-}, {
-    name: "roleChoice",
-    message: "Which type of team member wold you like to add?",
-    type: "list",
-    choices: ['Employee', 'Engineer', 'Intern', 'Manager', 'Finish building my team']
+// }, {
+//     name: "email",
+//     message: "What is the team employee's email?",
+//     type: "input",
+// }, {
+//     name: "roleChoice",
+//     message: "Which type of team member wold you like to add?",
+//     type: "list",
+//     choices: ['Employee', 'Engineer', 'Intern', 'Manager', 'Finish building my team']
 
-}]
+// }]
 
 function generateHTML() {
     var htmlBeginner = `
@@ -288,5 +288,6 @@ function employee() {
 
 
 manager();
+// module.exports = generateHTML, userChoice, manager, engineer, intern, employee;
 // var makeHTML = generateHTML(data)
 // writeToFile("Sample.html", makeHTML);
