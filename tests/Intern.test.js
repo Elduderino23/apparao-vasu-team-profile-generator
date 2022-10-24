@@ -6,7 +6,7 @@ describe("Intern", () => {
         expect(assistant.id).toEqual(1)
         expect(assistant.email).toEqual("tomselleck@gmail.com")
         expect(assistant.school).toEqual("USC")
-        expect(assistant.getRole()).toEqual("Manager")
+        expect(assistant.getRole()).toEqual("Intern")
     });
 
 })

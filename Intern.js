@@ -18,7 +18,7 @@ class Intern{
         return this.school;
     }
     getRole = () => {
-        return "Manager";
+        return "Intern";
     }
 }
   
