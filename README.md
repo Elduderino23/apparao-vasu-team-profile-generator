@@ -1,8 +1,7 @@
 # Team Profile Generator
 
 ## Deployable Video Link
-
-
+https://watch.screencastify.com/v/5dSwvtKhCM5jr8m2XtbE
 
 ## Goal
 The task was to make a HTML generator that created a website with sections for Manager, Intern, and Engineer. All three positions had to to have the inputs for names, id numbers and emails addresses that when clicked in the HTML, opens up and populate the TO field of the email with the address in the user's default email program. The only difference between each rolls was the Manager roll had to have an office number, the Engineer roll had to have a GitHub username that when clicked on sent the user to the engineer's GitHub profile, and the Intern roll had to have an input to put the name of the school the user wants to input in. The application also needed to have test.js files that associated with each roll, Engineer.test.js to Engineer.js for example, and all tests had to pass.
