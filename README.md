@@ -364,4 +364,11 @@ function employee() {
 
 The following website demonstrates what the final product looks like:
 
+The test with every roll.js file pass the test.
+![](2022-10-24-18-40-02.png)
 
+The question prompts in terminal:
+![](2022-10-24-18-41-52.png)
+
+The generated website look:
+![](2022-10-24-18-43-25.png)
