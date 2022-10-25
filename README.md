@@ -12,333 +12,356 @@ The task was to make a HTML generator that created a website with sections for M
   - HTML
   - W3.CSS Templates
   - JQuery
-  - Open Wea
-  - Moment.js
+  - Node.js
+  - Inquirer
+  - Jest
   - VS Code
   - Git Bash 
   - GitHub
 
 ## Execution
-The first part of making the weather dashboard operational was to make the HTML and CSS. Luckily with Bootstrap, structuring the index.html file was not overbearing. Since the website was mainly for displaying the current weather and a five day forecast, the style.css sheet was relatively anemic. The real work behind the website was situated in the Javascript. The first thing that was put into the javascript was a continuos clock that is situated in top right corner of the website. It displays the the real time a user access the website.
+The first part of making the team profile generator was to make a setup html file. There was an early decision to create a style.css and index.html early on in order to create the structure in order to make the right format for the index.js but after implementing the W3.CSS templates for the project and it working, the decision was made to cut the style.css for the file was unnecessary. Then came the hardest part of the profile generator, writing code for Employee.test.js and Employee.js. A lot of research and testing was done in order to pass the npm run test tests but eventually the following codes was written which is seen below
 
-The function in order to make this happen is shown below:
-
+Employee.test.js code:
 ```Javascript
- var weatherClock = function () {
-        var presentClock = moment().format('[Today], dddd MMMM Do YYYY h:mm:ss a')
-        $("#presentDay").text(presentClock)
-    }
-    setInterval(weatherClock, 1000)
+const Employee = require("../Employee")
+describe("Employee", () => {
+    it("should create object with arguments of name, id, email",  () => {
+        const drone = new Employee("tom", 1, "tomselleck@gmail.com")
+        expect(drone.name).toEqual("tom")
+        expect(drone.id).toEqual(1)
+        expect(drone.email).toEqual("tomselleck@gmail.com")
+        expect(drone.getRole()).toEqual("Employee")
+    });
+
+})
+
 ```
-presentDay was the id in the HTML that controlled the date so adding a function that calculated the present time, in the form of a variable aptly named presentClock, display the time in real time. The interval down below set the time for every 1000 millisecond, one second.
 
-The second part of tackling the Javascript was making an API call for the weather. In order for any API to work, one needs an API key. After receiving the key from the Open Weather website, a function had to be created to call for the forecast of any given city and another function for the longitude and latitude in order to make displaying the weather of any given city possible.
-
-The set up is shown below:
+Employee.js code:
 
 ```Javascript
-function retrieveAPI() {
-    var city = document.getElementById("city").value
-    console.log(city)
-    if(!searchHistory.includes(city)){
-        searchHistory.push(city)
+ class Employee{
+    constructor(name, id, email){
+    this.name = name,
+    this.id = id,
+    this.email = email
     }
-    localStorage.setItem('retrieveAPI', JSON.stringify(searchHistory));
-    var requestSite = 'https://api.openweathermap.org/data/2.5/forecast?q=' + city + '&appid=cf1929056b460b4693a80b30482c21ed&units=imperial'
-
-    fetch(requestSite)
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (data) {
-
-            console.log(data)
-            var forecastListEl = document.getElementById("js-forecast-list")
-            forecastListEl.innerHTML = ""
-            for (let i = 0; i < 5; i++) {
-                renderForecastCard(data.list[i], i)
-            }
-
-            var lon = data.city.coord.lon
-            var lat = data.city.coord.lat
-            var requestNew = 'https://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon + '&appid=cf1929056b460b4693a80b30482c21ed&units=imperial'
-
-            fetch(requestNew)
-                .then(function (response) {
-                    return response.json();
-                })
-                .then(function (data) {
-                    var forecastListE0 = document.getElementById("weather")
-                    forecastListE0.innerHTML = ""
-                    renderOriginForecastCard(data)
-                    console.log(data)
-
-
-                })
-
-        })
+    getName = () => {
+        return this.name;
+    }
+    getID = () => {
+        return this.id;
+    }
+    getEmail = () => {
+        return this.email;
+    }
+    getRole = () => {
+        return "Employee";
+    }
 }
+  
+  module.exports = Employee;
 ```
-In order to display the weather conditions with picture icons and information two functions had to be made. The function that shows the current day's weather, renderOriginForecastCard, displays today's weather while the forecast function, renderForecastCard, displays the the five day forecast. 
+The require method in Employee.test.js shown above the pulls from Employee.js in order to test name, id, email, and the get roll of Employee with place holder name of Tom Selleck. After passing the test for Employee.js using Employee.test.js, making the other files was simpler because it was the same set up but adding their respective attribute. For example, after linking Manager.js with Employee.js, The only get method that was needed was office number. Since Manager.js, Intern.js, and Engineer.js are connect to Employee.js through the extend method and require method, all the javascript files for each roles need just the get method for their individual attribute.
+An example of Intern, seen below illustrates this point:
+```Javascript
+const Employee =require("./Employee")
+class Intern extends Employee{
+    constructor(name, id, email, school){
+        super(name, id, email)
+    this.school = school
+    }
+    getSchool = () => {
+        return this.school;
+    }
+    getRole = () => {
+        return "Intern";
+    }
+}
+  
+  module.exports = Intern;
+```
 
-Both functions are shown below:
+The second part of tackling the team generator after passing the individual role tests using npm run test was coding the index.js. This part required three parts, generating the html file with inputs from the user, an array of questions for the user to answer, and prompts for the user to answer the questions themselves. The first part used require methods for the npm inquirer, fs or file system for short, and all the job roles shown below:
+```Javascript
+const inquirer = require('inquirer')
+const fs = require("fs")
+const Manager = require("./Manager.js")
+const Engineer = require("./Engineer.js")
+const Intern = require("./Intern.js")
+const Employee = require("./Employee.js")
+```
+After setting up the beginning part, The creation of the array with questions for the user to answer nd the set up of each answered prompt with the right rolls within the right spots of the html had to be created using functions like generateHTML and const variables for each questions set for each roll and choice box as well as inquirer prompts. After making the prompts with questions and a generateHTML for the generated html file, a function, called userChoice, was created for switch statements for each question.
+The set up in it's entirety is shown below:
 
 ```Javascript
-function renderOriginForecastCard(todayWeather) {
-    console.log(todayWeather)
-    var dayOne = moment().format("MMM Do YY")
-    var forecastListE0 = document.getElementById("weather")
-    var cardOneHTML = `
-<div class="card">
-  <div class="card-body">
-  <p class="card-text">${dayOne}</p>
-  <p class="card-text">${document.getElementById("city").value}</p>
-  <img class="card-title"src=${"http://openweathermap.org/img/wn/"+todayWeather.weather[0].icon+"@2x.png"}
-    <p class="card-text">temp: ${todayWeather.main.temp}</p>
-    <p class="card-text">wind speed: ${todayWeather.wind.speed}</p>
-    <p class="card-text">wind gust: ${todayWeather.wind.gust}</p>
-    <p class="card-text">humidity: ${todayWeather.main.humidity}</p>
+const employeeArray = []
+
+const managerQuestion = [{
+    name: "name",
+    message: "What is the team manager's name?",
+    type: "input",
+
+}, {
+    name: "id",
+    message: "What is the team manager's id?",
+    type: "input",
+
+}, {
+    name: "email",
+    message: "What is the team manager's email?",
+    type: "input",
+
+}, {
+    name: "office_number",
+    message: "What is the team manager's office number?",
+    type: "input",
+
+}, {
+    name: "roleChoice",
+    message: "Which type of team member wold you like to add?",
+    type: "list",
+    choices: ['Engineer', 'Intern', 'Manager', 'Finish building my team']
+
+}]
+
+const engineerQuestion = [{
+    name: "name",
+    message: "What is the team engineer's name?",
+    type: "input",
+
+}, {
+    name: "id",
+    message: "What is the team engineer's id?",
+    type: "input",
+
+}, {
+    name: "email",
+    message: "What is the team engineer's email?",
+    type: "input",
+
+}, {
+    name: "github",
+    message: "What is the team engineer's GitHub username?",
+    type: "input",
+
+}, {
+    name: "roleChoice",
+    message: "Which type of team member wold you like to add?",
+    type: "list",
+    choices: ['Engineer', 'Intern', 'Manager', 'Finish building my team']
+
+}]
+
+const internQuestion = [{
+    name: "name",
+    message: "What is the team intern's name?",
+    type: "input",
+
+}, {
+    name: "id",
+    message: "What is the team intern's id?",
+    type: "input",
+
+}, {
+    name: "email",
+    message: "What is the team intern's email?",
+    type: "input",
+
+}, {
+    name: "school",
+    message: "What is the team intern's school name?",
+    type: "input",
+
+}, {
+    name: "roleChoice",
+    message: "Which type of team member wold you like to add?",
+    type: "list",
+    choices: ['Engineer', 'Intern', 'Manager', 'Finish building my team']
+
+}]
+
+// Generates HTML and places input information in the right spot
+function generateHTML() {
+    var htmlBeginner = `
+    <!DOCTYPE html>
+<html>
+<head>
+<title>Team Generator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="w3-container w3-theme w3-padding" id="myHeader">
+  <div class="w3-center">
+  <h4>Team Generator</h4>
+  <h1>Your Team</h1>
+    <div class="w3-padding-32">
+    </div>
+  </div>
+</header>
+    `
+    for (let i = 0; i < employeeArray.length; i++) {
+        const element = employeeArray[i];
+
+        if (element.getRole() === "Manager") {
+            htmlBeginner +=
+            `
+            <div class="w3-row-padding w3-center w3-margin-top">
+            <div class="w3-fifth">
+  <div class="w3-card w3-container" style="min-height:460px">
+  <h3>Manager</h3><br>
+  <i class="fa fa-user-plus w3-margin-bottom w3-text-theme" style="font-size:120px"></i>
+  <div>
+  <div>name: ${element.name}</div>
+  <div>id: ${element.id}</div>
+  <div>Email: <a href ="mailto:${element.email}">${element.email}</a></div>
+    <div>office number: ${element.office_number}</div>
+   </div>
   </div>
 </div>
-`
-    var listItemOne = document.createElement("li")
-    listItemOne.innerHTML = cardOneHTML
-    forecastListE0.appendChild(listItemOne)
-}
-function renderForecastCard(weatherObject, i) {
-    console.log(weatherObject)
-    var dayNext = moment().add(i + 1, 'days').format("MMM Do YY")
-    var forecastListEl = document.getElementById("js-forecast-list")
-    var cardHTML = `
-<div class="card">
-  <div class="card-body">
-  <p class="card-text">${dayNext}</p>
-  <p class="card-text">${document.getElementById("city").value}</p>
-    <img class="card-title"src=${"http://openweathermap.org/img/wn/"+weatherObject.weather[0].icon+"@2x.png"}>
-    <p class="card-text">temp: ${weatherObject.main.temp}</p>
-    <p class="card-text">wind speed: ${weatherObject.wind.speed}</p>
-    <p class="card-text">wind gust: ${weatherObject.wind.gust}</p>
-    <p class="card-text">humidity: ${weatherObject.main.humidity}</p>
+</div>
+</div>
+    `
+        } else if (element.getRole() === "Engineer") {
+            htmlBeginner +=
+            `
+            <div class="w3-row-padding w3-center w3-margin-top">
+            <div class="w3-fifth">
+  <div class="w3-card w3-container" style="min-height:460px">
+  <h3>Engineer</h3><br>
+  <i class="fa fa-wrench w3-margin-bottom w3-text-theme" style="font-size:120px"></i>
+  <div>
+  <div>name: ${element.name}</div>
+  <div>id: ${element.id}</div>
+  <div><a href ="mailto:${element.email}">${element.email}</a></div>
+    <div>Github: <a href ="https://github.com/${element.github}"target="_blank">${element.github}</a></div>
+   </div>
   </div>
 </div>
-`
-    var listItem = document.createElement("li")
-    listItem.innerHTML = cardHTML
-    forecastListEl.appendChild(listItem)
+    `
+        } else if (element.getRole() === "Employee") {
+            htmlBeginner +=
+            `
+            <div class="w3-row-padding w3-center w3-margin-top">
+    <div class="w3-row-padding w3-center w3-margin-top">
+<div class="w3-fifth">
+  <div class="w3-card w3-container" style="min-height:460px">
+  <h3>Employee</h3><br>
+  <i class="fa fa-user w3-margin-bottom w3-text-theme" style="font-size:120px"></i>
+ <div>
+  <div>name: ${element.name}</div>
+  <div>id: ${element.id}</div>
+  <div><a href ="mailto:${element.email}">${element.email}</a></div>
+ </div>
+  </div>
+</div>
+    `
+        } else if (element.getRole() === "Intern") {
+            htmlBeginner +=
+            `
+            <div class="w3-row-padding w3-center w3-margin-top">
+            <div class="w3-fifth">
+  <div class="w3-card w3-container" style="min-height:460px">
+  <h3>Intern</h3><br>
+  <i class="fa fa-child w3-margin-bottom w3-text-theme" style="font-size:120px"></i>
+  <div>
+  <div>name: ${element.name}</div>
+  <div>id: ${element.id}</div>
+  <div>email: <a href ="mailto:${element.email}">${element.email}</a></div>
+    <div>school: ${element.school}</div>
+   </div>
+  </div>
+</div>
+     `
+        }
+
+    }
+    htmlBeginner +=
+    `
+    </div>
+</div>
+<br>
+
+<!-- Footer -->
+<footer class="w3-container w3-theme-dark w3-padding-16">
+    <h3>Footer</h3>
+    <div style="position:relative;bottom:55px;" class="w3-tooltip w3-right">
+      <span class="w3-text w3-theme-light w3-padding">Go To Top</span>    
+      <a class="w3-text-white" href="#myHeader"><span class="w3-xlarge">
+      <i class="fa fa-chevron-circle-up"></i></span></a>
+    </div>
+</footer>
+    `
+    return htmlBeginner
+}
+// Controls switching from one role to another.
+function userChoice(nextRole) {
+    switch (nextRole) {
+        case ("Employee"):
+            employee()
+            break;
+        case ("Engineer"):
+            engineer()
+            break;
+        case ("Intern"):
+            intern()
+            break;
+        case ("Manager"):
+            manager()
+            break;
+        default:
+            var makeHTML = generateHTML()
+            fs.writeFile("Sample.html", makeHTML, error =>{
+                console.log(error)
+            });
+            break;
+    }
 }
 ```
-After creating the functions that show the current weather and the 5 day forecast, The next stage was to make each city be saved in localStorage and be pulled out in order to generate buttons for cities in previous history to be clicked on and seen. A global variable had to be made in order to get items out of local storage and then, with a combination of a for loop and appending elements with the button as seen below:
+The last part of the index.js file is a series of functions that records the data saved from the user's inputs and which would be called in the generateHTML function. 
 
- ```Javascript
-var searchHistory = JSON.parse(localStorage.getItem("retrieveAPI")) || [];
+All the recorder functions for each job roll is shown below:
 
-for (let i = 0; i < searchHistory.length; i++) {
-    var historyBtn = document.createElement("button")
-    historyBtn.textContent = searchHistory[i]
-    historyBtn.addEventListener("click", function () {
-        var city = (searchHistory[i])
-        document.getElementById("city").value = city
-        retrieveAPI()
+```Javascript
+
+function manager() {
+    inquirer.prompt(managerQuestion).then(function (data) {
+        var newManager = new Manager(data.name, data.id, data.email, data.office_number)
+        employeeArray.push(newManager)
+        userChoice(data.roleChoice)
     })
-    document.getElementById("history").append(historyBtn)
+}
+function engineer() {
+    inquirer.prompt(engineerQuestion).then(function (data) {
+        var newEngineer = new Engineer(data.name, data.id, data.email, data.github)
+        employeeArray.push(newEngineer)
+        userChoice(data.roleChoice)
+    })
+}
+function intern() {
+    inquirer.prompt(internQuestion).then(function (data) {
+        var newIntern = new Intern(data.name, data.id, data.email, data.school)
+        employeeArray.push(newIntern)
+        userChoice(data.roleChoice)
+    })
+}
+function employee() {
+    inquirer.prompt(employeeQuestion).then(function (data) {
+        var newEmployee = new Employee(data.name, data.id, data.email)
+        employeeArray.push(newEmployee)
+        userChoice(data.roleChoice)
+    })
 }
  ```
-The for loop above relies on the array generated from the API calls get saved in localStorage and then pulls the search results out of localStorage in order to generate a clickable history list that doesn't repeat multiple searches of the same city but keeps the new cities displayed. the part is the fetch button itself shown below:
-
-```Javascript
-fetchButton.addEventListener('click', retrieveAPI)
-```
 ## Result
 
 The following website demonstrates what the final product looks like:
 
 
-<!-- # 10 Object-Oriented Programming: Team Profile Generator
-
-## Your Task
-
-Your task is to build a Node.js command-line application that takes in information about employees on a software engineering team, then generates an HTML webpage that displays summaries for each person. Testing is key to making code maintainable, so you’ll also write a unit test for every part of your code and ensure that it passes each test.
-
-Because this application won’t be deployed, you’ll need to provide a link to a walkthrough video that demonstrates its functionality and all of the tests passing. You’ll need to submit a link to the video AND add it to the readme of your project.
-
-> **Note**: There is no starter code for this assignment.
-
-## User Story
-
-```md
-AS A manager
-I WANT to generate a webpage that displays my team's basic info
-SO THAT I have quick access to their emails and GitHub profiles
-```
-
-## Acceptance Criteria
-
-```md
-GIVEN a command-line application that accepts user input
-WHEN I am prompted for my team members and their information
-THEN an HTML file is generated that displays a nicely formatted team roster based on user input
-WHEN I click on an email address in the HTML
-THEN my default email program opens and populates the TO field of the email with the address
-WHEN I click on the GitHub username
-THEN that GitHub profile opens in a new tab
-WHEN I start the application
-THEN I am prompted to enter the team manager’s name, employee ID, email address, and office number
-WHEN I enter the team manager’s name, employee ID, email address, and office number
-THEN I am presented with a menu with the option to add an engineer or an intern or to finish building my team
-WHEN I select the engineer option
-THEN I am prompted to enter the engineer’s name, ID, email, and GitHub username, and I am taken back to the menu
-WHEN I select the intern option
-THEN I am prompted to enter the intern’s name, ID, email, and school, and I am taken back to the menu
-WHEN I decide to finish building my team
-THEN I exit the application, and the HTML is generated
-```
-
-## Mock-Up
-
-The following image shows a mock-up of the generated HTML’s appearance and functionality:
-
-![HTML webpage titled “My Team” features five boxes listing employee names, titles, and other key info.](./Assets/10-object-oriented-programming-homework-demo.png)
-
-The styling in the image is just an example, so feel free to add your own.
-
-## Getting Started
-
-This Challenge will combine many of the skills we've covered so far. In addition to the User Story and Acceptance Criteria, we’ve provided some guidelines to help get started.
-
-Because this Challenge will require a video submission, refer to the [Fullstack Blog Video Submission Guide](https://coding-boot-camp.github.io/full-stack/computer-literacy/video-submission-guide) for additional guidance on creating a video.
-
-Your application should use [Jest](https://www.npmjs.com/package/jest) for running the unit tests and [Inquirer](https://www.npmjs.com/package/inquirer/v/8.2.4) for collecting input from the user. The application will be invoked by using the following command:
-
-```bash
-node index.js
-```
-
-It is recommended that you start with a directory structure that looks like the following example:
-
-```md
-.
-├── __tests__/             //jest tests
-│   ├── Employee.test.js
-│   ├── Engineer.test.js
-│   ├── Intern.test.js
-│   └── Manager.test.js
-├── dist/                  // rendered output (HTML) and CSS style sheet      
-├── lib/                   // classes
-├── src/                   // template helper code 
-├── .gitignore             // indicates which folders and files Git should ignore
-├── index.js               // runs the application
-└── package.json           
-```
-
-**Important**: Make sure that you remove `dist` from the `.gitignore` file so that Git will track this folder and include it when you push up to your application's repository.
-
-The application must include `Employee`, `Manager`, `Engineer`, and `Intern` classes. The tests for these classes (in the `_tests_` directory) must ALL pass.
-
-The first class is an `Employee` parent class with the following properties and methods:
-
-* `name`
-
-* `id`
-
-* `email`
-
-* `getName()`
-
-* `getId()`
-
-* `getEmail()`
-
-* `getRole()`&mdash;returns `'Employee'`
-
-The other three classes will extend `Employee`.
-
-In addition to `Employee`'s properties and methods, `Manager` will also have the following:
-
-* `officeNumber`
-
-* `getRole()`&mdash;overridden to return `'Manager'`
-
-In addition to `Employee`'s properties and methods, `Engineer` will also have the following:
-
-* `github`&mdash;GitHub username
-
-* `getGithub()`
-
-* `getRole()`&mdash;overridden to return `'Engineer'`
-
-In addition to `Employee`'s properties and methods, `Intern` will also have the following:
-
-* `school`
-
-* `getSchool()`
-
-* `getRole()`&mdash;overridden to return `'Intern'`
-
-Finally, although it’s not a requirement, consider adding validation to ensure that user input is in the proper format.
-
-## Grading Requirements
-
-> **Note**: If a Challenge assignment submission is marked as “0”, it is considered incomplete and will not count towards your graduation requirements. Examples of incomplete submissions include the following:
->
-> * A repository that has no code
->
-> * A repository that includes a unique name but nothing else
->
-> * A repository that includes only a README file but nothing else
->
-> * A repository that only includes starter code
-
-This Challenge is graded based on the following criteria:
-
-### Deliverables: 15%
-
-* A sample HTML file generated using the application must be submitted.
-
-* Your GitHub repository containing your application code.
-
-### Walkthrough Video: 32%
-
-* A walkthrough video that demonstrates the functionality of the Team Profile Generator and passing tests must be submitted, and a link to the video should be included in your README file.
-
-* The walkthrough video must show all four tests passing from the command line.
-
-* The walkthrough video must demonstrate how a user would invoke the application from the command line.
-
-* The walkthrough video must demonstrate how a user would enter responses to all of the prompts in the application.
-
-* The walkthrough video must demonstrate a generated HTML file that matches the user input.
-
-### Technical Acceptance Criteria: 40%
-
-* Satisfies all of the preceding acceptance criteria plus the following:
-
-  * Uses the [Inquirer package](https://www.npmjs.com/package/inquirer/v/8.2.4).
-
-  * Uses the [Jest package](https://www.npmjs.com/package/jest) for a suite of unit tests.
-
-  * The application must have `Employee`, `Manager`, `Engineer`, and `Intern` classes.
-
-### Repository Quality: 13%
-
-* Repository has a unique name.
-
-* Repository follows best practices for file structure and naming conventions.
-
-* Repository follows best practices for class/id naming conventions, indentation, quality comments, etc.
-
-* Repository contains multiple descriptive commit messages.
-
-* Repository contains a high-quality readme with description and a link to a walkthrough video.
-
-## Review
-
-You are required to submit the following for review:
-
-* A walkthrough video that demonstrates the functionality of the application and passing tests.
-
-* A sample HTML file generated using your application.
-
-* The URL of the GitHub repository, with a unique name and a readme describing the project.
-
----
-© 2022 Trilogy Education Services, LLC, a 2U, Inc. brand. Confidential and Proprietary. All Rights Reserved. -->

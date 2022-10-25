@@ -153,7 +153,7 @@ function generateHTML() {
   <div>name: ${element.name}</div>
   <div>id: ${element.id}</div>
   <div><a href ="mailto:${element.email}">${element.email}</a></div>
-    <div>Github: <a href ="https://github.com/${element.github}">${element.github}</a></div>
+    <div>Github: <a href ="https://github.com/${element.github}"target="_blank">${element.github}</a></div>
    </div>
   </div>
 </div>
